@@ -1,3 +1,16 @@
+/**
+ *  midi_guitar
+ *  Author: Michael Kohn
+ *   Email: mike@mikekohn.net
+ *     Web: http://www.mikekohn.net/
+ * License: GPL
+ *
+ * Copyright 2015 by Michael Kohn
+ *
+ * DCT.cxx: Input is a list of samples, output is a set of DCT's.
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>

@@ -1,3 +1,16 @@
+/**
+ *  midi_guitar
+ *  Author: Michael Kohn
+ *   Email: mike@mikekohn.net
+ *     Web: http://www.mikekohn.net/
+ * License: GPL
+ *
+ * Copyright 2015 by Michael Kohn
+ *
+ * MidiFile.cxx: Module for creating .mid files.
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>

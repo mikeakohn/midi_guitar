@@ -1,3 +1,17 @@
+/**
+ *  midi_guitar
+ *  Author: Michael Kohn
+ *   Email: mike@mikekohn.net
+ *     Web: http://www.mikekohn.net/
+ * License: GPL
+ *
+ * Copyright 2015 by Michael Kohn
+ *
+ * test_wav.cxx: Take a wav file as input, convert to DCT, and output
+ *               a .mid file.
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
