@@ -35,8 +35,8 @@ void DCT::compute_dct_ii(FLOAT *buffer, FLOAT *dct, int N)
   FLOAT n_times_2 = (FLOAT)2 * (FLOAT)N;
   FLOAT k_div_n_times_2;
 
-  w0 = sqrt(1.0 / (FLOAT)N);
-  wk = sqrt(2.0 / (FLOAT)N);
+  w0 = SQRT(1.0 / (FLOAT)N);
+  wk = SQRT(2.0 / (FLOAT)N);
 
   for (k = 0; k < DCT_LEN; k++)
   {
@@ -46,8 +46,8 @@ void DCT::compute_dct_ii(FLOAT *buffer, FLOAT *dct, int N)
 
     for (n = 0; n < N; n++)
     {
-      //sum += buffer[n] * cos(M_PI * ((FLOAT)2 * (FLOAT)n + (FLOAT)1) * (FLOAT)k / ((FLOAT)2 * (FLOAT)N));
-      sum += buffer[n] * cos(pi_2_n_1[n] * k_div_n_times_2);
+      //sum += buffer[n] * COS(M_PI * ((FLOAT)2 * (FLOAT)n + (FLOAT)1) * (FLOAT)k / ((FLOAT)2 * (FLOAT)N));
+      sum += buffer[n] * COS(pi_2_n_1[n] * k_div_n_times_2);
     }
 
     w = (k == 0) ? w0 : wk;
