@@ -1,0 +1,4 @@
+*.o
+test_wav
+*.wav
+*.mid
