@@ -15,15 +15,16 @@
 #include <stdint.h>
 
 #include "float.h"
+#include "AudioInput.h"
 
-class WAV
+class WAV : public AudioInput
 {
 public:
-  WAV(FILE *in);
-  ~WAV() { }
-  int read_headers();
-  int read_data(FLOAT *samples, int count);
-  int get_sample_rate() { return fmt_chunk.sample_rate; }
+  WAV(const char *filename);
+  virtual ~WAV();
+  virtual int init();
+  virtual int read_data(FLOAT *samples, int count);
+  virtual int get_sample_rate() { return fmt_chunk.sample_rate; }
 
 private:
   FILE *in;

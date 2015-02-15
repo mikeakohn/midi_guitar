@@ -18,13 +18,20 @@
 
 #include "WAV.h"
 
-WAV::WAV(FILE *in) : read_count(0)
+WAV::WAV(const char *filename) : AudioInput(filename), read_count(0)
 {
-  this->in = in;
+  in = fopen(filename, "rb");
 }
 
-int WAV::read_headers()
+WAV::~WAV()
 {
+  fclose(in);
+}
+
+int WAV::init()
+{
+  if (in == NULL) { return -1; }
+
   parse_header();
   parse_fmt_chunk();
   parse_data_chunk();

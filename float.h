@@ -20,7 +20,7 @@
 #define COS cos
 #define SQRT sqrt
 #else
-//#define COS_LOOKUP
+#define COS_LOOKUP
 #define FLOAT float
 #define COS cosf
 #define SQRT sqrtf

@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "AudioInput.h"
 #include "DCT.h"
 #include "MidiFile.h"
 #include "MidiMap.h"
@@ -24,9 +25,9 @@
 
 int main(int argc, char *argv[])
 {
-  FILE *in,*out;
+  FILE *out;
   DCT *dct;
-  WAV *wav;
+  AudioInput *audio_input;
   MidiMap *midi_map;
   MidiFile *midi_file;
   uint8_t midi_notes[128];
@@ -43,11 +44,11 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
-  in = fopen(argv[1], "rb");
-  if (in == NULL)
+  audio_input = new WAV(argv[1]);
+  if (audio_input->init() != 0)
   {
-    printf("Could not open file %s for reading.\n", argv[1]);
-    exit(1);
+    printf("Could not open file %s for reading\n", argv[1]);
+    delete audio_input;
   }
 
   if (argc == 3)
@@ -56,7 +57,7 @@ int main(int argc, char *argv[])
     if (out == NULL)
     {
       printf("Could not open file %s for writing.\n", argv[2]);
-      fclose(in);
+      delete audio_input;
       exit(1);
     }
 
@@ -68,10 +69,7 @@ int main(int argc, char *argv[])
     midi_file = NULL;
   }
   
-  wav = new WAV(in);
-  wav->read_headers();
-
-  midi_map = new MidiMap(wav->get_sample_rate());
+  midi_map = new MidiMap(audio_input->get_sample_rate());
 
   dct = new DCT();
 #ifdef COS_LOOKUP
@@ -82,8 +80,8 @@ int main(int argc, char *argv[])
 
   while(1)
   {
-    printf("------- %f seconds --------\n", (float)samples / (float)wav->get_sample_rate());
-    if (wav->read_data(buffer, SAMPLES) != 0) { break; }
+    printf("------- %f seconds --------\n", (float)samples / (float)audio_input->get_sample_rate());
+    if (audio_input->read_data(buffer, SAMPLES) != 0) { break; }
 #ifndef COS_LOOKUP
     dct->compute_dct_ii(buffer, dcts, SAMPLES);
 #else
@@ -152,11 +150,10 @@ int main(int argc, char *argv[])
     delete midi_file;
   }
 
-  delete wav;
+  delete audio_input;
   delete dct;
   delete midi_map;
 
-  fclose(in);
   fclose(out);
 
   return 0;
