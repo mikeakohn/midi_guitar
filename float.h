@@ -13,9 +13,17 @@
 #ifndef _FLOAT_H
 #define _FLOAT_H
 
+//#define USE_DOUBLE
+
+#ifdef USE_DOUBLE
 #define FLOAT double
 #define COS cos
 #define SQRT sqrt
+#else
+#define FLOAT float
+#define COS cosf
+#define SQRT sqrtf
+#endif
 
 #endif
 
