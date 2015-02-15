@@ -27,8 +27,12 @@ public:
   ~DCT() { }
 
   void compute_dct_ii(FLOAT *buffer, FLOAT *dct, int N);
+  void init_cos_lookup();
+  void compute_dct_ii_cos_lookup(FLOAT *buffer, FLOAT *dct, int N);
 
 private:
+  FLOAT *cos_lookup;
+  FLOAT w0,wk;
   FLOAT pi_2_n_1[SAMPLES];
 };
 

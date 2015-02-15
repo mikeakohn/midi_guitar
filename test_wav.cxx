@@ -74,6 +74,9 @@ int main(int argc, char *argv[])
   midi_map = new MidiMap(wav->get_sample_rate());
 
   dct = new DCT();
+#ifdef COS_LOOKUP
+  dct->init_cos_lookup();
+#endif
 
   int samples = 0;
 
@@ -81,7 +84,11 @@ int main(int argc, char *argv[])
   {
     printf("------- %f seconds --------\n", (float)samples / (float)wav->get_sample_rate());
     if (wav->read_data(buffer, SAMPLES) != 0) { break; }
+#ifndef COS_LOOKUP
     dct->compute_dct_ii(buffer, dcts, SAMPLES);
+#else
+    dct->compute_dct_ii_cos_lookup(buffer, dcts, SAMPLES);
+#endif
 
     midi_map->dct_to_midi(dcts, midi_notes, DCT_LEN);
     midi_map->print_notes(midi_notes);
