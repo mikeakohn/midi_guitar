@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 #include <math.h>
 
 //#include "FrequencyMap.h"
@@ -59,6 +60,7 @@ void DCT::compute_dct_ii(FLOAT *buffer, FLOAT *dct, int N)
 void DCT::init_cos_lookup()
 {
   int k,n;
+  int lookup_start = 0;
   FLOAT N_times_2 = (FLOAT)SAMPLES * (FLOAT)2;
   FLOAT k_div_N_times_2;
 
@@ -66,27 +68,27 @@ void DCT::init_cos_lookup()
 
   for (k = 0; k < DCT_LEN; k++)
   {
-    int lookup_start = k * DCT_LEN;
     k_div_N_times_2 = (FLOAT)k / N_times_2;
 
     for (n = 0; n < SAMPLES; n++)
     {
       cos_lookup[lookup_start + n] = COS(pi_2_n_1[n] * k_div_N_times_2);
     }
+
+    lookup_start += SAMPLES;
   }
 }
 
 void DCT::compute_dct_ii_cos_lookup(FLOAT *buffer, FLOAT *dct, int N)
 {
-  FLOAT sum;
   int n,k;
+  int lookup_start = 0;
+  FLOAT sum;
   FLOAT w;
 
   for (k = 0; k < DCT_LEN; k++)
   {
     sum = 0;
-
-    int lookup_start = k * DCT_LEN;
 
     for (n = 0; n < N; n++)
     {
@@ -96,6 +98,8 @@ void DCT::compute_dct_ii_cos_lookup(FLOAT *buffer, FLOAT *dct, int N)
     w = (k == 0) ? w0 : wk;
 
     dct[k] = w * sum;
+
+    lookup_start += SAMPLES;
   }
 }
 
