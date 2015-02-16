@@ -1,7 +1,7 @@
 
-CFLAGS=-Wall -O3
+CFLAGS=-Wall -g
 #CFLAGS=-Wall -O3 -mcpu=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -ffast-math
-LDFLAGS=-lm
+LDFLAGS=-lm -lasound
 
 default:
 	g++ -c AudioDevice.cxx $(CFLAGS)

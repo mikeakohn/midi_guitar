@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
-  if (strncmp(argv[1], "/dev", 4) == 0)
+  if (strncmp(argv[1], "/dev", 4) == 0 || true)
   {
     audio_input = new AudioDevice(argv[1]);
   }
@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
   delete dct;
   delete midi_map;
 
-  fclose(out);
+  if (out != NULL) { fclose(out); }
 
   return 0;
 }

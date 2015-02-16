@@ -24,58 +24,109 @@
 
 AudioDevice::AudioDevice(const char *device)
 {
-  in = open(device, O_RDONLY);
+  status = snd_pcm_open(&pcm_handle, device, SND_PCM_STREAM_CAPTURE, 0);
+
+  if (status < 0)
+  {
+    printf("ERROR: snd_pcm_open %s\n", snd_strerror(status));
+  }
 }
 
 AudioDevice::~AudioDevice()
 {
-  close(in);
+  if (params != NULL) { snd_pcm_hw_params_free(params); }
+  if (pcm_handle != NULL) { snd_pcm_close(pcm_handle); }
 }
 
 int AudioDevice::init()
 {
-  int rate = 44100;
-  int format = AFMT_S16_LE;
-  int channels = 1;
+  unsigned int rate = 44100;
+  //unsigned int rate = 48000;
+  //int format = AFMT_S16_LE;
+  const int channels = 1;
 
-  if (in == -1)
+  if (status < 0)
   {
-    printf("in = -1\n");
+    printf("status < 0 error\n");
     return -1;
   }
 
-  if (ioctl(in, SNDCTL_DSP_SETFMT, &format) == -1)
+  if (snd_pcm_hw_params_malloc(&params) < 0)
   {
-    printf("SNDCTL_DSP_SETFMT error\n");
+    printf("ERROR: snd_pcm_hw_params_malloc()\n");
     return -1;
   }
 
-  if (ioctl(in, SNDCTL_DSP_SPEED, &rate) == -1)
+  if (snd_pcm_hw_params_any(pcm_handle, params) < 0)
   {
-    printf("SNDCTL_DSP_SPEED error\n");
+    printf("ERROR: snd_pcm_hw_params_any()\n");
     return -1;
   }
 
-  if (ioctl(in, SNDCTL_DSP_CHANNELS, &channels) == -1)
+  if ((status = snd_pcm_hw_params_set_access(pcm_handle, params, SND_PCM_ACCESS_RW_INTERLEAVED)) < 0)
   {
-    printf("SNDCTL_DSP_CHANNELS error\n");
+    printf("ERROR: Can't set interleaved mode. %s\n", snd_strerror(status));
     return -1;
   }
+ 
+  if ((status = snd_pcm_hw_params_set_format(pcm_handle, params, SND_PCM_FORMAT_S16_LE)) < 0)
+  {
+    printf("ERROR: Can't set format. %s\n", snd_strerror(status));
+    return -1;
+  }
+ 
+  if ((status = snd_pcm_hw_params_set_channels(pcm_handle, params, channels)) < 0)
+  {
+    printf("ERROR: Can't set channels number. %s\n", snd_strerror(status));
+    return -1;
+  }
+ 
+  if ((status = snd_pcm_hw_params_set_rate_near(pcm_handle, params, &rate, 0)) < 0)
+  {
+    printf("ERROR: Can't set rate. %s\n", snd_strerror(status));
+    return -1;
+  }
+ 
+  if ((status = snd_pcm_hw_params(pcm_handle, params)) < 0)
+  {
+    printf("ERROR: Can't set harware parameters. %s\n", snd_strerror(status));
+    return -1;
+  }
+
+  if ((status = snd_pcm_prepare(pcm_handle)) < 0)
+  {
+    printf ("ERROR: snd_pcm_prepare %s\n", snd_strerror(status));
+    return -1;
+  }
+
+  printf("PCM name: '%s'\n", snd_pcm_name(pcm_handle));
+  printf("PCM state: %s\n", snd_pcm_state_name(snd_pcm_state(pcm_handle)));
+
+  unsigned int tmp; 
+  snd_pcm_hw_params_get_channels(params, &tmp);
+  printf("channels: %i ", tmp);
+ 
+  if (tmp == 1) { printf("(mono)\n"); }
+  else if (tmp == 2) { printf("(stereo)\n"); }
+
+  snd_pcm_hw_params_get_rate(params, &tmp, 0);
+  printf("rate: %d bps\n", tmp);
 
   return 0;
 }
 
 int AudioDevice::read_data(FLOAT *samples, int count)
 {
-  int n,len;
+  snd_pcm_sframes_t n;
+  int len;
 
   len = 0; 
-  while(len < 8192 * 2)
+  while(len < 8192)
   {
-    n = read(in, ((uint8_t *)buffer) + len, (8192 * 2) - len);
+    n = snd_pcm_readi(pcm_handle, ((uint8_t *)buffer) + len, 8192 - len);
     if (n < 0)
     {
-      printf("read() failed %d/%d\n", n, len);
+      printf("snd_pcm_readi() failed %d  %s\n", len, snd_strerror(n));
       return -1;
     }
     len += n;

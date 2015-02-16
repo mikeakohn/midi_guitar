@@ -13,6 +13,7 @@
 #define _AUDIO_DEVICE_H
 
 #include <stdint.h>
+#include <alsa/asoundlib.h>
 
 #include "float.h"
 #include "AudioInput.h"
@@ -27,7 +28,10 @@ public:
   virtual int get_sample_rate() { return 44100; }
 
 private:
-  int in;
+  int status;
+  snd_pcm_t *pcm_handle;
+  snd_pcm_hw_params_t *params;
+  snd_pcm_uframes_t frames;
   int16_t buffer[8192];
 };
 
