@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
   AudioInput *audio_input;
   NoteMap *note_map;
   Midi *midi;
+  Note note;
   uint8_t midi_notes[128];
   FLOAT buffer[SAMPLES];
   FLOAT dcts[DCT_LEN];
@@ -138,7 +139,6 @@ int main(int argc, char *argv[])
 
       if (next_note != last_note && next_note != 0)
       {
-        Note note;
         note.volume = 127;
         note.midi_channel = 1;
 
@@ -171,6 +171,13 @@ int main(int argc, char *argv[])
 
   if (midi != NULL)
   {
+    if (last_note != 0)
+    {
+      printf("NOTE OFF: %d  divisions=%d\n", last_note, divisions);
+      note.pitch = last_note;
+      note.division_delay = divisions;
+      midi->write_midi_note_off(&note);
+    }
     delete midi;
   }
 

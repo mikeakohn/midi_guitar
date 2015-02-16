@@ -9,6 +9,13 @@
  *
  * MidiDevice.cxx: Module for writing to a MIDI device.
  *
+ * Notes:
+ *   aplay -l
+ *   aonnect -o
+ *   /etc/init.d/timidity start
+ *   modprobe snd-virmidi
+ *   aconnect 20:0 128:0
+ *
  */
 
 #include <stdio.h>
@@ -21,6 +28,11 @@
 MidiDevice::MidiDevice(const char *device)
 {
   status = snd_rawmidi_open(&read_handle, &write_handle, device, 0);
+
+  if (status != 0)
+  {
+    printf("MidiDevice status=%s\n", snd_strerror(status));
+  }
 }
 
 MidiDevice::~MidiDevice()
