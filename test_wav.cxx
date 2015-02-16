@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
-  if (strncmp(argv[1], "/dev/dsp", 8) == 0)
+  if (strncmp(argv[1], "/dev", 4) == 0)
   {
     audio_input = new AudioDevice(argv[1]);
   }
@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
   {
     printf("Could not open file %s for reading\n", argv[1]);
     delete audio_input;
+    exit(1);
   }
 
   if (argc == 3)
