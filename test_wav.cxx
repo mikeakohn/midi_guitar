@@ -87,9 +87,13 @@ int main(int argc, char *argv[])
   dct->init_cos_lookup();
 #endif
 
+  int flags = fcntl(0, F_GETFL, 0);
+  flags |= O_NONBLOCK;
+  fcntl(0, F_SETFL, flags);
+
   int samples = 0;
 
-  while(1)
+  while(true)
   {
     printf("------- %f seconds --------\n", (float)samples / (float)audio_input->get_sample_rate());
     if (audio_input->read_data(buffer, SAMPLES) != 0) { break; }
@@ -153,6 +157,10 @@ int main(int argc, char *argv[])
     }
 
     samples += SAMPLES;
+
+    int ch = getchar();
+
+    if (ch != -1) { break; }
   }
 
   if (midi_file != NULL)

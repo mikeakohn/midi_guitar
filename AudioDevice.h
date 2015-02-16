@@ -29,7 +29,8 @@ public:
 
 private:
   int status;
-  snd_pcm_t *pcm_handle;
+  snd_mixer_t *mixer;
+  snd_pcm_t *pcm;
   snd_pcm_hw_params_t *params;
   snd_pcm_uframes_t frames;
   int16_t buffer[8192];
