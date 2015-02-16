@@ -29,7 +29,11 @@ MidiFile::MidiFile(const char *filename, int bpm, int divisions) :
 
 MidiFile::~MidiFile()
 {
-  if (out != NULL) { fclose(out); }
+  if (out != NULL)
+  {
+    write_midi_footer();
+    fclose(out);
+  }
 }
 
 int MidiFile::init()
