@@ -14,8 +14,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
+#include "AudioDevice.h"
 #include "AudioInput.h"
 #include "DCT.h"
 #include "MidiFile.h"
@@ -44,7 +46,15 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
-  audio_input = new WAV(argv[1]);
+  if (strncmp(argv[1], "/dev/dsp", 8) == 0)
+  {
+    audio_input = new AudioDevice(argv[1]);
+  }
+  else
+  {
+    audio_input = new WAV(argv[1]);
+  }
+
   if (audio_input->init() != 0)
   {
     printf("Could not open file %s for reading\n", argv[1]);
