@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef _MIDI_MAP
-#define _MIDI_MAP
+#ifndef _NOTE_MAP
+#define _NOTE_MAP
 
 #include <stdint.h>
 

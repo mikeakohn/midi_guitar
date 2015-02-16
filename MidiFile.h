@@ -15,26 +15,17 @@
 
 #include <stdint.h>
 
-struct Note
-{
-  uint8_t volume;
-  uint8_t pitch;
-  int division_delay;
-  int midi_channel;
-};
+#include "Midi.h"
 
-class MidiFile
+class MidiFile : public Midi
 {
 public:
-  MidiFile(FILE *out, const char *song_name, int bpm, int divisions);
-  ~MidiFile();
+  MidiFile(const char *filename, int bpm, int divisions);
+  virtual ~MidiFile();
 
-  void write_midi_header(const char *song_name);
-  void write_midi_note_on(Note *note);
-  void write_midi_note_off(Note *note);
-  void write_midi_footer();
-  void write_midi_bpm();
-  void write_midi_time_signature();
+  virtual int init();
+  virtual void write_midi_note_on(Note *note);
+  virtual void write_midi_note_off(Note *note);
 
 private:
   FILE *out;
@@ -43,6 +34,11 @@ private:
   int time_signature_beats;
   int time_signature_base;
   long marker;
+
+  void write_midi_header(const char *song_name);
+  void write_midi_footer();
+  void write_midi_bpm();
+  void write_midi_time_signature();
 
   int write_int32(int n);
   int write_int16(int n);

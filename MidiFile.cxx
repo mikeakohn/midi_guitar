@@ -18,19 +18,28 @@
 
 #include "MidiFile.h"
 
-MidiFile::MidiFile(FILE *out, const char *song_name, int bpm, int divisions) :
-  out(out),
+MidiFile::MidiFile(const char *filename, int bpm, int divisions) :
   bpm(bpm),
   divisions(divisions),
   time_signature_beats(4),
   time_signature_base(4)
 {
-  write_midi_header(song_name);
-  write_midi_bpm();
+  out = fopen(filename, "wb");
 }
 
 MidiFile::~MidiFile()
 {
+  if (out != NULL) { fclose(out); }
+}
+
+int MidiFile::init()
+{
+  if (out == NULL) { return -1; }
+
+  write_midi_header("dct");
+  write_midi_bpm();
+
+  return 0;
 }
 
 void MidiFile::write_midi_header(const char *song_name)
@@ -114,7 +123,7 @@ void MidiFile::write_midi_bpm()
 
 void MidiFile::write_midi_time_signature()
 {
-int d;
+  int d;
 
   d = time_signature_base;
 

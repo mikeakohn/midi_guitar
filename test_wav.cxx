@@ -20,6 +20,8 @@
 #include "AudioDevice.h"
 #include "AudioInput.h"
 #include "DCT.h"
+#include "Midi.h"
+#include "MidiDevice.h"
 #include "MidiFile.h"
 #include "NoteMap.h"
 #include "WAV.h"
@@ -27,11 +29,10 @@
 
 int main(int argc, char *argv[])
 {
-  FILE *out;
   DCT *dct;
   AudioInput *audio_input;
   NoteMap *note_map;
-  MidiFile *midi_file;
+  Midi *midi;
   uint8_t midi_notes[128];
   FLOAT buffer[SAMPLES];
   FLOAT dcts[DCT_LEN];
@@ -46,11 +47,11 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
-  if (strncmp(argv[1], "/dev", 4) == 0 || true)
+  if (strncmp(argv[1], "hw:", 3) == 0 || strncmp(argv[1], "plughw:", 7) == 0)
   {
     audio_input = new AudioDevice(argv[1]);
   }
-  else
+    else
   {
     audio_input = new WAV(argv[1]);
   }
@@ -64,20 +65,25 @@ int main(int argc, char *argv[])
 
   if (argc == 3)
   {
-    out = fopen("out.mid", "wb");
-    if (out == NULL)
+    if (strncmp(argv[2], "hw:", 3) == 0 || strncmp(argv[2], "plughw:", 7) == 0)
+    {
+      midi = new MidiDevice(argv[2]);
+    }
+      else
+    {
+      midi = new MidiFile(argv[2], 60, 240);
+    }
+
+    if (midi->init() != 0)
     {
       printf("Could not open file %s for writing.\n", argv[2]);
       delete audio_input;
       exit(1);
     }
-
-    midi_file = new MidiFile(out, argv[2], 60, 240);
   }
     else
   {
-    out = NULL;
-    midi_file = NULL;
+    midi = NULL;
   }
   
   note_map = new NoteMap(audio_input->get_sample_rate());
@@ -106,7 +112,7 @@ int main(int argc, char *argv[])
     note_map->dct_to_midi(dcts, midi_notes, DCT_LEN);
     note_map->print_notes(midi_notes);
 
-    if (midi_file != NULL)
+    if (midi != NULL)
     {
       next_note = 0;
 
@@ -141,13 +147,13 @@ int main(int argc, char *argv[])
           printf("NOTE OFF: %d  divisions=%d\n", last_note, divisions);
           note.pitch = last_note;
           note.division_delay = divisions;
-          midi_file->write_midi_note_off(&note);
+          midi->write_midi_note_off(&note);
         }
 
         printf("NOTE ON: %d\n", next_note);
         note.pitch = next_note;
         note.division_delay = 0;
-        midi_file->write_midi_note_on(&note);
+        midi->write_midi_note_on(&note);
 
         divisions = 0;
         last_note = next_note;
@@ -163,17 +169,14 @@ int main(int argc, char *argv[])
     if (ch != -1) { break; }
   }
 
-  if (midi_file != NULL)
+  if (midi != NULL)
   {
-    midi_file->write_midi_footer();
-    delete midi_file;
+    delete midi;
   }
 
   delete audio_input;
   delete dct;
   delete note_map;
-
-  if (out != NULL) { fclose(out); }
 
   return 0;
 }
