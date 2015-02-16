@@ -7,7 +7,7 @@
  *
  * Copyright 2015 by Michael Kohn
  *
- * MidiMap.cxx: Take a series dct's and output a series of midi notes and
+ * NoteMap.cxx: Take a series dct's and output a series of midi notes and
  *              their volume.
  *
  */
@@ -19,9 +19,9 @@
 #include <math.h>
 
 #include "DCT.h"
-#include "MidiMap.h"
+#include "NoteMap.h"
 
-double MidiMap::midi_notes[] =
+double NoteMap::midi_notes[] =
 {
   0,  // 0
   0,  // 1
@@ -145,7 +145,7 @@ double MidiMap::midi_notes[] =
   7902.13,  // 119 B8
 };
 
-const char *MidiMap::midi_names[] =
+const char *NoteMap::midi_names[] =
 {
   "??",  // 0
   "??",  // 1
@@ -269,7 +269,7 @@ const char *MidiMap::midi_names[] =
   "B8",  // 119 7902.13
 };
 
-MidiMap::MidiMap(int sample_rate)
+NoteMap::NoteMap(int sample_rate)
 {
   int i,n;
 
@@ -298,7 +298,7 @@ MidiMap::MidiMap(int sample_rate)
   freq_scale = freq_scale * (FLOAT)sample_rate / SAMPLES;
 }
 
-void MidiMap::dct_to_midi(FLOAT *dcts, uint8_t *midi_notes, int count)
+void NoteMap::dct_to_midi(FLOAT *dcts, uint8_t *midi_notes, int count)
 {
   int volume,freq,note;
   int k;
@@ -320,7 +320,7 @@ void MidiMap::dct_to_midi(FLOAT *dcts, uint8_t *midi_notes, int count)
   }
 }
 
-void MidiMap::print_notes(uint8_t *midi_notes)
+void NoteMap::print_notes(uint8_t *midi_notes)
 {
   int n;
 

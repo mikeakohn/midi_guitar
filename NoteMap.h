@@ -16,11 +16,11 @@
 
 #include "float.h"
 
-class MidiMap
+class NoteMap
 {
 public:
-  MidiMap(int sample_rate);
-  ~MidiMap() { }
+  NoteMap(int sample_rate);
+  ~NoteMap() { }
   const char *get_name(int note) { return midi_names[note]; }
   void dct_to_midi(FLOAT *dct, uint8_t *midi_notes, int count);
   void print_notes(uint8_t *midi_notes);

@@ -21,7 +21,7 @@
 #include "AudioInput.h"
 #include "DCT.h"
 #include "MidiFile.h"
-#include "MidiMap.h"
+#include "NoteMap.h"
 #include "WAV.h"
 #include "float.h"
 
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
   FILE *out;
   DCT *dct;
   AudioInput *audio_input;
-  MidiMap *midi_map;
+  NoteMap *note_map;
   MidiFile *midi_file;
   uint8_t midi_notes[128];
   FLOAT buffer[SAMPLES];
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
     midi_file = NULL;
   }
   
-  midi_map = new MidiMap(audio_input->get_sample_rate());
+  note_map = new NoteMap(audio_input->get_sample_rate());
 
   dct = new DCT();
 #ifdef COS_LOOKUP
@@ -103,8 +103,8 @@ int main(int argc, char *argv[])
     dct->compute_dct_ii_cos_lookup(buffer, dcts, SAMPLES);
 #endif
 
-    midi_map->dct_to_midi(dcts, midi_notes, DCT_LEN);
-    midi_map->print_notes(midi_notes);
+    note_map->dct_to_midi(dcts, midi_notes, DCT_LEN);
+    note_map->print_notes(midi_notes);
 
     if (midi_file != NULL)
     {
@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
 
   delete audio_input;
   delete dct;
-  delete midi_map;
+  delete note_map;
 
   if (out != NULL) { fclose(out); }
 

@@ -8,10 +8,10 @@ default:
 	g++ -c AudioInput.cxx $(CFLAGS)
 	g++ -c WAV.cxx $(CFLAGS)
 	g++ -c MidiFile.cxx $(CFLAGS)
-	g++ -c MidiMap.cxx $(CFLAGS)
+	g++ -c NoteMap.cxx $(CFLAGS)
 	g++ -c DCT.cxx $(CFLAGS)
 	g++ -o test_wav test_wav.cxx AudioDevice.o AudioInput.o DCT.o \
-	       MidiFile.o MidiMap.o WAV.o \
+	       MidiFile.o NoteMap.o WAV.o \
 	   $(CFLAGS) $(LDFLAGS)
 
 clean:
