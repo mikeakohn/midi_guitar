@@ -136,6 +136,8 @@ int AudioDevice::init()
   chmap = snd_pcm_get_chmap(pcm);
   printf("PCM pos: %s\n", snd_pcm_chmap_name((snd_pcm_chmap_position)chmap->pos[0]));
 #endif
+
+#if 0
   snd_pcm_chmap_query_t **chmap_query;
   chmap_query = snd_pcm_query_chmaps(pcm);
 
@@ -146,6 +148,7 @@ int AudioDevice::init()
       snd_pcm_chmap_type_name((*p)->type),
       (*p)->map.channels);
   }
+#endif
 
   snd_pcm_hw_params_get_rate(params, &tmp, 0);
   printf("rate: %d bps\n", tmp);
