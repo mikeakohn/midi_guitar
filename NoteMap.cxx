@@ -346,7 +346,7 @@ void NoteMap::dct_to_midi(int *dcts, uint8_t *midi_notes, int count)
     volume = dcts[k];
     volume = (volume < 0) ? -volume : volume;
 
-printf("%d) %d [%x]   %x\n", k , volume, volume, VOLUME_THRESHOLD_INT);
+//printf("%d) %d [%x]   %x\n", k , volume, volume, VOLUME_THRESHOLD_INT);
     if (volume > VOLUME_THRESHOLD_INT)
     {
 #if 0
