@@ -146,7 +146,7 @@ void DCT::compute_dct_ii_cos_lookup(int *buffer, int *dct, int N)
       if (INT_PRECISION == 15) { sample = buffer[n]; }
       else { sample = buffer[n] >> (15 - INT_PRECISION); }
 
-printf("%d  %d\n", sample, cos_lookup_int[lookup_start + n]);
+//printf("%d  %d\n", sample, cos_lookup_int[lookup_start + n]);
       sum += (sample * cos_lookup_int[lookup_start + n]) >> INT_PRECISION;
     }
 
