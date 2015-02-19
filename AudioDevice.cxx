@@ -18,8 +18,13 @@
 
 #include "AudioDevice.h"
 
-AudioDevice::AudioDevice(const char *device) : mixer(NULL), pcm(NULL)
+AudioDevice::AudioDevice(const char *device, int gain) :
+  gain(gain),
+  mixer(NULL),
+  pcm(NULL)
 {
+  divisor = (float)32768 / (float)gain;
+
   do
   {
     status = snd_pcm_open(&pcm, device, SND_PCM_STREAM_CAPTURE, 0);
@@ -220,14 +225,42 @@ int AudioDevice::read_data(FLOAT *samples, int count)
   for (n = 0; n < 8192; n++)
   {
     //FLOAT sample = (FLOAT)buffer[n] / 32767.0;
-    FLOAT sample = (FLOAT)buffer[n] / 1000.0;
+    FLOAT sample = (FLOAT)buffer[n] / divisor;
 
     if (sample > 1.0) { sample = 1.0; }
       else
     if (sample < -1.0) { sample = -1.0; }
 
     samples[n] = sample;
-//printf("samples[n]=%f  %d\n", samples[n], buffer[n]);
+  }
+
+  return 0;
+}
+
+int AudioDevice::read_data(int *samples, int count)
+{
+  snd_pcm_sframes_t n;
+  int len;
+
+  len = 0; 
+  while(len < 8192)
+  {
+    n = snd_pcm_readi(pcm, ((uint8_t *)buffer) + len, 8192 - len);
+    if (n < 0)
+    {
+      printf("snd_pcm_readi() failed %d  %s\n", len, snd_strerror(n));
+      return -1;
+    }
+    len += n;
+  }
+
+  for (n = 0; n < 8192; n++)
+  {
+    //int sample = buffer[n];
+    int sample = buffer[n] * gain;
+
+    sample = (sample < -32768) ? -32768 : sample;
+    samples[n] = sample;
   }
 
   return 0;

@@ -24,6 +24,7 @@ public:
   virtual ~WAV();
   virtual int init();
   virtual int read_data(FLOAT *samples, int count);
+  virtual int read_data(int *samples, int count);
   virtual int get_sample_rate() { return fmt_chunk.sample_rate; }
 
 private:

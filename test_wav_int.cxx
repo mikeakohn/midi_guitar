@@ -35,8 +35,8 @@ int main(int argc, char *argv[])
   Midi *midi;
   Note note;
   uint8_t midi_notes[128];
-  FLOAT buffer[SAMPLES];
-  FLOAT dcts[DCT_LEN];
+  int buffer[SAMPLES];
+  int dcts[DCT_LEN];
   int last_note = 0;
   int divisions = 0;
   int division_len = (SAMPLES * 240) / 44100;
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 
   dct = new DCT();
 #ifdef COS_LOOKUP
-  dct->init_cos_lookup();
+  dct->init_cos_lookup_int();
 #endif
 
   int flags = fcntl(0, F_GETFL, 0);

@@ -16,7 +16,7 @@ int: $(OBJECTS)
 	   $(OBJECTS) \
 	   $(CFLAGS) $(LDFLAGS)
 
-%.o: %.cxx %.h
+%.o: %.cxx %.h float.h
 	$(CPP) -c $*.cxx $(CFLAGS)
 
 clean:

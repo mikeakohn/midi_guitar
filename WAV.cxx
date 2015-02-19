@@ -59,6 +59,8 @@ int WAV::read_data(FLOAT *samples, int count)
     {
       ch = getc(in);
       sample = ch - 128;
+      sample = (sample < -127) ? -127 : sample;
+      samples[n] = (FLOAT)sample / -127.0;
     }
   }
     else
@@ -72,6 +74,46 @@ int WAV::read_data(FLOAT *samples, int count)
       sample = read_int16();
       sample = (sample < -32767) ? -32767 : sample;
       samples[n] = (FLOAT)sample / 32767.0;
+    }
+  }
+    else
+  {
+    printf("Unknown wav format.\n");
+    return 0;
+  }
+
+  return 0;
+}
+
+int WAV::read_data(int *samples, int count)
+{
+  int16_t sample;
+  int ch;
+  int n;
+
+  if (fmt_chunk.bits_per_sample == 8)
+  {
+    read_count += count;
+    if (read_count > data_length) { return -1; }
+
+    for (n = 0; n < count; n++)
+    {
+      ch = getc(in);
+      sample = ch - 128;
+      samples[n] = sample << 8;
+    }
+  }
+    else
+  if (fmt_chunk.bits_per_sample == 16)
+  {
+    read_count += count * 2;
+    if (read_count > data_length) { return -1; }
+
+    for (n = 0; n < count; n++)
+    {
+      sample = read_int16();
+      sample = (sample < -32767) ? -32767 : sample;
+      samples[n] = sample;
     }
   }
     else

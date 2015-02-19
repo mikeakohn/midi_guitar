@@ -24,6 +24,7 @@ public:
   virtual ~AudioInput();
   virtual int init() = 0;
   virtual int read_data(FLOAT *samples, int count) = 0;
+  virtual int read_data(int *samples, int count) = 0;
   virtual int get_sample_rate() = 0;
 };
 

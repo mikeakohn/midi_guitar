@@ -271,7 +271,7 @@ const char *NoteMap::midi_names[] =
 
 NoteMap::NoteMap(int sample_rate)
 {
-  int i,n;
+  int i,n,k;
 
   memset(frequency_to_midi, 0, sizeof(frequency_to_midi));
 
@@ -296,11 +296,20 @@ NoteMap::NoteMap(int sample_rate)
 
   freq_scale = (FLOAT)(22100) / (FLOAT)sample_rate;
   freq_scale = freq_scale * (FLOAT)sample_rate / SAMPLES;
+
+  for (k = 0; k < 8192; k++)
+  {
+    int freq = (FLOAT)k * freq_scale;
+    int note = k < 8192 ? get_note(freq) : 0;
+
+    dct_to_note[k] = note;
+  }
 }
 
 void NoteMap::dct_to_midi(FLOAT *dcts, uint8_t *midi_notes, int count)
 {
-  int volume,freq,note;
+  int volume,note;
+  //int freq;
   int k;
 
   memset(midi_notes, 0, 128);
@@ -311,11 +320,46 @@ void NoteMap::dct_to_midi(FLOAT *dcts, uint8_t *midi_notes, int count)
 
     if (volume > VOLUME_THRESHOLD)
     {
+#if 0
       freq = (FLOAT)k * freq_scale;
       note = k < 8192 ? get_note(freq) : 0;
+#endif
+
+      note = dct_to_note[k];
 
       if (midi_notes[note] < volume) { midi_notes[note] = volume; }
       //printf("%d - %s  volume=%d (%d,%f)\n", note, get_name(note), volume, k, dcts[k]);
+    }
+  }
+}
+
+void NoteMap::dct_to_midi(int *dcts, uint8_t *midi_notes, int count)
+{
+  int volume,note;
+  //int freq;
+  int k;
+
+  memset(midi_notes, 0, 128);
+
+  for (k = 0; k < count; k++)
+  {
+    volume = dcts[k];
+    volume = (volume < 0) ? -volume : volume;
+
+printf("%d) %d [%x]   %x\n", k , volume, volume, VOLUME_THRESHOLD_INT);
+    if (volume > VOLUME_THRESHOLD_INT)
+    {
+#if 0
+      freq = (k * (44100 / 2)) / SAMPLES;
+      note = k < 8192 ? get_note(freq) : 0;
+#endif
+
+      note = dct_to_note[k];
+
+      volume = volume >> 15;
+      volume = (volume > 255) ? 255 : volume;
+
+      if (midi_notes[note] < volume) { midi_notes[note] = volume; }
     }
   }
 }

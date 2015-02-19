@@ -19,6 +19,7 @@
 #define SAMPLES 8192
 #define DCT_LEN 3151
 #define VOLUME_THRESHOLD 2
+#define VOLUME_THRESHOLD_INT (32768 << 14)
 
 class DCT
 {
@@ -28,11 +29,15 @@ public:
 
   void compute_dct_ii(FLOAT *buffer, FLOAT *dct, int N);
   void init_cos_lookup();
+  void init_cos_lookup_int();
   void compute_dct_ii_cos_lookup(FLOAT *buffer, FLOAT *dct, int N);
+  void compute_dct_ii_cos_lookup(int *buffer, int *dct, int N);
 
 private:
   FLOAT *cos_lookup;
+  int *cos_lookup_int;
   FLOAT w0,wk;
+  int w0_int,wk_int;
   FLOAT pi_2_n_1[SAMPLES];
 };
 

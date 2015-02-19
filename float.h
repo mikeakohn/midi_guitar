@@ -13,6 +13,7 @@
 #ifndef _FLOAT_H
 #define _FLOAT_H
 
+#define INT_PRECISION 14
 //#define USE_DOUBLE
 
 #ifdef USE_DOUBLE

@@ -21,14 +21,17 @@
 class AudioDevice : public AudioInput
 {
 public:
-  AudioDevice(const char *filename);
+  AudioDevice(const char *filename, int gain);
   virtual ~AudioDevice();
   virtual int init();
   virtual int read_data(FLOAT *samples, int count);
+  virtual int read_data(int *samples, int count);
   virtual int get_sample_rate() { return 44100; }
 
 private:
   int status;
+  float divisor;
+  int gain;
   snd_mixer_t *mixer;
   snd_pcm_t *pcm;
   snd_pcm_hw_params_t *params;
