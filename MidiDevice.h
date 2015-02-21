@@ -14,7 +14,9 @@
 #define _MIDI_DEVICE_H
 
 #include <stdint.h>
+#ifdef ALSA
 #include <alsa/asoundlib.h>
+#endif
 
 #include "Midi.h"
 
@@ -29,8 +31,10 @@ public:
   virtual void write_midi_note_off(Note *note);
 
 private:
+#ifdef ALSA
   snd_rawmidi_t *read_handle;
   snd_rawmidi_t *write_handle;
+#endif
 };
 
 #endif

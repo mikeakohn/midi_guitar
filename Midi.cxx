@@ -18,7 +18,8 @@
 
 #include "Midi.h"
 
-Midi::Midi()
+Midi::Midi() :
+  status(-1)
 {
 }
 

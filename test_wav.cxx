@@ -15,6 +15,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <math.h>
 
 #include "AudioDevice.h"
@@ -26,6 +29,8 @@
 #include "NoteMap.h"
 #include "WAV.h"
 #include "float.h"
+
+#define TIME_TO_FLOAT(a) (float)(a.tv_sec) + ((float)a.tv_usec / 1000000)
 
 int main(int argc, char *argv[])
 {
@@ -41,6 +46,7 @@ int main(int argc, char *argv[])
   int divisions = 0;
   int division_len = (SAMPLES * 240) / 44100;
   int next_note;
+  struct timeval tv_lookup,tv_start,tv_end,tv_diff;
 
   if (argc != 2 && argc != 3)
   {
@@ -89,10 +95,14 @@ int main(int argc, char *argv[])
   
   note_map = new NoteMap(audio_input->get_sample_rate());
 
+  gettimeofday(&tv_lookup, NULL);
+
   dct = new DCT();
 #ifdef COS_LOOKUP
   dct->init_cos_lookup();
 #endif
+
+  gettimeofday(&tv_start, NULL);
 
   int flags = fcntl(0, F_GETFL, 0);
   flags |= O_NONBLOCK;
@@ -169,6 +179,8 @@ int main(int argc, char *argv[])
     if (ch != -1) { break; }
   }
 
+  gettimeofday(&tv_end, NULL);
+
   if (midi != NULL)
   {
     if (last_note != 0)
@@ -184,6 +196,17 @@ int main(int argc, char *argv[])
   delete audio_input;
   delete dct;
   delete note_map;
+
+  tv_lookup.tv_usec = tv_lookup.tv_usec % 1000000;
+  tv_start.tv_usec = tv_start.tv_usec % 1000000;
+  tv_end.tv_usec = tv_end.tv_usec % 1000000;
+
+#ifdef COS_LOOKUP
+  timersub(&tv_start, &tv_lookup, &tv_diff);
+  printf("Lookup table time: %fs\n", TIME_TO_FLOAT(tv_diff));
+#endif
+  timersub(&tv_end, &tv_start, &tv_diff);
+  printf("    DCT/MIDI time: %fs\n", TIME_TO_FLOAT(tv_diff));
 
   return 0;
 }

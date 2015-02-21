@@ -1,7 +1,11 @@
 
-CFLAGS=-Wall -O3 -g
+OSTYPE=$(shell uname -s)
+ifeq ($(OSTYPE),Linux)
+ALSA=-lasound
+endif
+CFLAGS=-Wall -O3 -g $(NOALSA)
 #CFLAGS=-Wall -O3 -mcpu=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -ffast-math
-LDFLAGS=-lm -lasound
+LDFLAGS=-lm $(ALSA)
 CPP=g++
 
 OBJECTS=AudioDevice.o AudioInput.o DCT.o Midi.o MidiDevice.o MidiFile.o NoteMap.o WAV.o 

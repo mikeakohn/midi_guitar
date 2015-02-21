@@ -19,10 +19,14 @@
 #include "AudioDevice.h"
 
 AudioDevice::AudioDevice(const char *device, int gain) :
-  gain(gain),
+#ifdef ALSA
   mixer(NULL),
-  pcm(NULL)
+  pcm(NULL),
+#endif
+  status(-1),
+  gain(gain)
 {
+#ifdef ALSA
   divisor = (float)32768 / (float)gain;
 
   do
@@ -47,17 +51,21 @@ AudioDevice::AudioDevice(const char *device, int gain) :
       break;
     }
   } while(0);
+#endif
 }
 
 AudioDevice::~AudioDevice()
 {
+#ifdef ALSA
   if (params != NULL) { snd_pcm_hw_params_free(params); }
   if (pcm != NULL) { snd_pcm_close(pcm); }
   if (mixer != NULL) { snd_mixer_close(mixer); }
+#endif
 }
 
 int AudioDevice::init()
 {
+#ifdef ALSA
   unsigned int rate = 44100;
   //unsigned int rate = 48000;
   //int format = AFMT_S16_LE;
@@ -201,12 +209,14 @@ int AudioDevice::init()
       printf("ERROR: snd_mixer_selem_set_capture_volume_all() %s\n", snd_strerror(status));
     }
   }
+#endif
 
   return 0;
 }
 
 int AudioDevice::read_data(FLOAT *samples, int count)
 {
+#ifdef ALSA
   snd_pcm_sframes_t n;
   int len;
 
@@ -233,12 +243,14 @@ int AudioDevice::read_data(FLOAT *samples, int count)
 
     samples[n] = sample;
   }
+#endif
 
   return 0;
 }
 
 int AudioDevice::read_data(int *samples, int count)
 {
+#ifdef ALSA
   snd_pcm_sframes_t n;
   int len;
 
@@ -262,6 +274,7 @@ int AudioDevice::read_data(int *samples, int count)
     sample = (sample < -32768) ? -32768 : sample;
     samples[n] = sample;
   }
+#endif
 
   return 0;
 }
