@@ -3,7 +3,7 @@ OSTYPE=$(shell uname -s)
 ifeq ($(OSTYPE),Linux)
 ALSA=-lasound
 endif
-CFLAGS=-Wall -O3 -g $(NOALSA)
+CFLAGS=-Wall -O3 -g
 #CFLAGS=-Wall -O3 -mcpu=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -ffast-math
 LDFLAGS=-lm $(ALSA)
 CPP=g++
