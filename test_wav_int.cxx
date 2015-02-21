@@ -30,6 +30,8 @@
 #include "WAV.h"
 #include "float.h"
 
+#define TIME_TO_FLOAT(a) (float)(a.tv_sec) + ((float)a.tv_usec / 1000000)
+
 int main(int argc, char *argv[])
 {
   DCT *dct;
@@ -44,7 +46,7 @@ int main(int argc, char *argv[])
   int divisions = 0;
   int division_len = (SAMPLES * 240) / 44100;
   int next_note;
-  struct timeval tv_lookup,tv_start,tv_end;
+  struct timeval tv_lookup,tv_start,tv_end,tv_diff;
 
   if (argc != 2 && argc != 3)
   {
