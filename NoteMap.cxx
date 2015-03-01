@@ -294,8 +294,10 @@ NoteMap::NoteMap(int sample_rate)
     }
   }
 
-  freq_scale = (FLOAT)(22100) / (FLOAT)sample_rate;
+  freq_scale = (FLOAT)(22050) / (FLOAT)sample_rate;
   freq_scale = freq_scale * (FLOAT)sample_rate / SAMPLES;
+printf("freq_scale=%f\n", freq_scale);
+  //freq_scale = 1;
 
   for (k = 0; k < 8192; k++)
   {

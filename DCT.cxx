@@ -27,11 +27,11 @@ DCT::DCT()
     pi_2_n_1[n] = M_PI * (2.0 * (FLOAT)n + 1);
   }
 
-  w0 = SQRT(1.0 / (FLOAT)SAMPLES);
-  wk = SQRT(2.0 / (FLOAT)SAMPLES);
+  w0 = SQRT(1.0 / (FLOAT)SAMPLES) * ((float)SAMPLE_RATE / (float)SAMPLES);
+  wk = SQRT(2.0 / (FLOAT)SAMPLES) * ((float)SAMPLE_RATE / (float)SAMPLES);
 
-  w0_int = w0 * (1 << INT_PRECISION);
-  wk_int = wk * (1 << INT_PRECISION);
+  w0_int = w0 * (1 << INT_PRECISION) * ((float)SAMPLE_RATE / (float)SAMPLES);
+  wk_int = wk * (1 << INT_PRECISION) * ((float)SAMPLE_RATE / (float)SAMPLES);
 }
 
 void DCT::compute_dct_ii(FLOAT *buffer, FLOAT *dct, int N)
@@ -39,7 +39,7 @@ void DCT::compute_dct_ii(FLOAT *buffer, FLOAT *dct, int N)
   FLOAT sum;
   int n,k;
   FLOAT w;
-  FLOAT N_times_2 = (FLOAT)N * (FLOAT)2;
+  FLOAT N_times_2 = (FLOAT)SAMPLE_RATE * (FLOAT)2;
   FLOAT k_div_N_times_2;
 
   for (k = 0; k < DCT_LEN; k++)
@@ -64,7 +64,7 @@ void DCT::init_cos_lookup()
 {
   int k,n;
   int lookup_start = 0;
-  FLOAT N_times_2 = (FLOAT)SAMPLES * (FLOAT)2;
+  FLOAT N_times_2 = (FLOAT)SAMPLE_RATE * (FLOAT)2;
   FLOAT k_div_N_times_2;
 
   cos_lookup = (FLOAT *)malloc(SAMPLES * DCT_LEN * sizeof(FLOAT));
@@ -86,7 +86,7 @@ void DCT::init_cos_lookup_int()
 {
   int k,n;
   int lookup_start = 0;
-  FLOAT N_times_2 = (FLOAT)SAMPLES * (FLOAT)2;
+  FLOAT N_times_2 = (FLOAT)SAMPLE_RATE * (FLOAT)2;
   FLOAT k_div_N_times_2;
 
   cos_lookup_int = (int *)malloc(SAMPLES * DCT_LEN * sizeof(int));
