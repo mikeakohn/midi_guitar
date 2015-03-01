@@ -63,7 +63,7 @@ void DCT::compute_dct_ii(FLOAT *buffer, FLOAT *dct, int N)
 void DCT::init_cos_lookup()
 {
   int k,n;
-  int lookup_start = 0;
+  int lookup_n = 0;
   FLOAT N_times_2 = (FLOAT)SAMPLE_RATE * (FLOAT)2;
   FLOAT k_div_N_times_2;
 
@@ -75,17 +75,15 @@ void DCT::init_cos_lookup()
 
     for (n = 0; n < SAMPLES; n++)
     {
-      cos_lookup[lookup_start + n] = COS(pi_2_n_1[n] * k_div_N_times_2);
+      cos_lookup[lookup_n++] = COS(pi_2_n_1[n] * k_div_N_times_2);
     }
-
-    lookup_start += SAMPLES;
   }
 }
 
 void DCT::init_cos_lookup_int()
 {
   int k,n;
-  int lookup_start = 0;
+  int lookup_n = 0;
   FLOAT N_times_2 = (FLOAT)SAMPLE_RATE * (FLOAT)2;
   FLOAT k_div_N_times_2;
 
@@ -97,11 +95,9 @@ void DCT::init_cos_lookup_int()
 
     for (n = 0; n < SAMPLES; n++)
     {
-      cos_lookup_int[lookup_start + n] =
+      cos_lookup_int[lookup_n++] =
         (COS(pi_2_n_1[n] * k_div_N_times_2) * (float)(1 << INT_PRECISION));
     }
-
-    lookup_start += SAMPLES;
   }
 }
 

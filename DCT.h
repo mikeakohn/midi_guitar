@@ -17,6 +17,7 @@
 
 //#define SAMPLES 44100
 //#define SAMPLE_RATE 22050
+//#define SAMPLE_RATE 44100
 #define SAMPLE_RATE 8192
 #define SAMPLES 8192
 #define DCT_LEN 3151
