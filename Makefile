@@ -11,12 +11,12 @@ CPP=g++
 OBJECTS=AudioDevice.o AudioInput.o DCT.o Midi.o MidiDevice.o MidiFile.o NoteMap.o WAV.o 
 
 default: $(OBJECTS)
-	$(CPP) -o test_wav test_wav.cxx \
+	$(CPP) -o midi_guitar midi_guitar.cxx \
 	   $(OBJECTS) \
 	   $(CFLAGS) $(LDFLAGS)
 
 int: $(OBJECTS)
-	$(CPP) -o test_wav_int test_wav_int.cxx \
+	$(CPP) -o midi_guitar_int midi_guitar_int.cxx \
 	   $(OBJECTS) \
 	   $(CFLAGS) $(LDFLAGS)
 
@@ -24,7 +24,7 @@ int: $(OBJECTS)
 	$(CPP) -c $*.cxx $(CFLAGS)
 
 clean:
-	@rm -f test_wav *.o
+	@rm -f midi_guitar midi_guitar_int *.o
 	@echo "Clean!"
 
 
