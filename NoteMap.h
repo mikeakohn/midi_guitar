@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef _NOTE_MAP
-#define _NOTE_MAP
+#ifndef _NOTE_MAP_H
+#define _NOTE_MAP_H
 
 #include <stdint.h>
 

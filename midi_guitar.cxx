@@ -23,6 +23,7 @@
 #include "AudioDevice.h"
 #include "AudioInput.h"
 #include "DCT.h"
+#include "Display.h"
 #include "Midi.h"
 #include "MidiDevice.h"
 #include "MidiFile.h"
@@ -39,6 +40,7 @@ int main(int argc, char *argv[])
   NoteMap *note_map;
   Midi *midi;
   Note note;
+  Display *display;
   uint8_t midi_notes[128];
   FLOAT buffer[SAMPLES];
   FLOAT dcts[DCT_LEN];
@@ -94,6 +96,9 @@ int main(int argc, char *argv[])
   }
   
   note_map = new NoteMap(audio_input->get_sample_rate());
+  display = new Display();
+  display->clear();
+  display->draw();
 
   gettimeofday(&tv_lookup, NULL);
 
@@ -174,6 +179,10 @@ int main(int argc, char *argv[])
 
     samples += SAMPLES;
 
+    display->clear();
+    display->update_notes(midi_notes, sizeof(midi_notes));
+    display->draw();
+
     int ch = getchar();
 
     if (ch != -1) { break; }
@@ -192,6 +201,8 @@ int main(int argc, char *argv[])
     }
     delete midi;
   }
+
+  if (display != NULL) { delete display; }
 
   delete audio_input;
   delete dct;

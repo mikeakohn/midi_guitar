@@ -1,5 +1,5 @@
 *.o
-test_wav
-test_wav_int
+midi_guitar
+midi_guitar_int
 *.wav
 *.mid

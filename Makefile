@@ -3,12 +3,13 @@ OSTYPE=$(shell uname -s)
 ifeq ($(OSTYPE),Linux)
 ALSA=-lasound
 endif
+SDL=$(shell sdl-config --cflags --libs)
 CFLAGS=-Wall -O3 -g
 #CFLAGS=-Wall -O3 -mcpu=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -ffast-math
-LDFLAGS=-lm $(ALSA)
+LDFLAGS=-lm $(ALSA) $(SDL)
 CPP=g++
 
-OBJECTS=AudioDevice.o AudioInput.o DCT.o Midi.o MidiDevice.o MidiFile.o NoteMap.o WAV.o 
+OBJECTS=AudioDevice.o AudioInput.o DCT.o Display.o Midi.o MidiDevice.o MidiFile.o NoteMap.o WAV.o 
 
 default: $(OBJECTS)
 	$(CPP) -o midi_guitar midi_guitar.cxx \
