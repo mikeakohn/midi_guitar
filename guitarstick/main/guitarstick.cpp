@@ -34,16 +34,22 @@
 #include "Processor.h"
 #include "UART.h"
 
+static const char *TAG = "guitarstick";
+
 static void run()
 {
   Processor processor;
 
   processor.init();
 
+  ESP_LOGI(TAG, "Initializing UART...");
+
   UART uart;
 
   uart.init();
   uart.send_char('A');
+
+  ESP_LOGI(TAG, "Initialized and ready to process...");
 
 #if 0
   float *data = processor.get_data();
@@ -82,7 +88,7 @@ static void run()
 #if 0
     if (freq != 0)
     {
-      printf("freq=%d %s %d\n",
+      ESP_LOGI(TAG, "freq=%d %s %d",
         freq,
         notes.get_name(freq),
         midi);
@@ -96,42 +102,42 @@ static void run()
         switch (midi)
         {
           case 0:
-            //printf("CENTER\n");
+            //ESP_LOGI(TAG, "CENTER");
             uart.send_char(0xff);
             uart.send_char(63);
             uart.send_char(63);
             uart.send_char(0x0);
             break;
           case 70:
-            printf("UP\n");
+            ESP_LOGI(TAG, "UP");
             uart.send_char(0xff);
             uart.send_char(63);
             uart.send_char(0);
             uart.send_char(0x0);
             break;
           case 67:
-            printf("RIGHT\n");
+            ESP_LOGI(TAG, "RIGHT");
             uart.send_char(0xff);
             uart.send_char(126);
             uart.send_char(63);
             uart.send_char(0x0);
             break;
           case 65:
-            printf("LEFT\n");
+            ESP_LOGI(TAG, "LEFT");
             uart.send_char(0xff);
             uart.send_char(0);
             uart.send_char(63);
             uart.send_char(0x0);
             break;
           case 61:
-            printf("DOWN\n");
+            ESP_LOGI(TAG, "DOWN");
             uart.send_char(0xff);
             uart.send_char(63);
             uart.send_char(126);
             uart.send_char(0x0);
             break;
           default:
-            printf("- %d\n", midi);
+            ESP_LOGI(TAG, "- %d", midi);
             uart.send_char(0xff);
             uart.send_char(63);
             uart.send_char(63);
@@ -171,7 +177,7 @@ static void run()
     if (value278 > threshold) { p = 'd'; }
     if (value698 > threshold) { p = 'f'; }
 
-printf("%d %d %d %d %d\n",
+ESP_LOGI(TAG, "%d %d %d %d %d",
   value392,
   value349,
   value466,
@@ -196,8 +202,8 @@ static void show_chip_info()
 
   esp_chip_info(&chip_info);
 
-  printf(
-    "This is %s chip with %d CPU core(s), WiFi%s%s, ",
+  ESP_LOGI(
+    TAG, "This is %s chip with %d CPU core(s), WiFi%s%s, ",
     CONFIG_IDF_TARGET,
     chip_info.cores,
    (chip_info.features & CHIP_FEATURE_BT) ? "/BT" : "",
@@ -205,19 +211,19 @@ static void show_chip_info()
 
   int major_rev = chip_info.revision / 100;
   int minor_rev = chip_info.revision % 100;
-  printf("silicon revision v%d.%d, ", major_rev, minor_rev);
+  ESP_LOGI(TAG, "silicon revision v%d.%d, ", major_rev, minor_rev);
 
   if (esp_flash_get_size(NULL, &flash_size) != ESP_OK)
   {
-    printf("Get flash size failed");
+    ESP_LOGI(TAG, "Get flash size failed");
     return;
   }
 
-  printf(
-    "%luMB %s flash\n", flash_size / (1024 * 1024),
+  ESP_LOGI(
+    TAG, "%luMB %s flash", flash_size / (1024 * 1024),
     (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "embedded" : "external");
 
-  printf("Minimum free heap size: %ld bytes\n",
+  ESP_LOGI(TAG, "Minimum free heap size: %ld bytes",
     esp_get_minimum_free_heap_size());
 }
 
@@ -232,7 +238,7 @@ void app_main(void)
 
   for (int i = 4; i >= 0; i--)
   {
-    printf("Restarting in %d seconds...\n", i);
+    ESP_LOGI(TAG, "Restarting in %d seconds...", i);
     vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
 
@@ -241,7 +247,7 @@ void app_main(void)
 
   run();
 
-  printf("Restarting now.\n");
+  ESP_LOGI(TAG, "Restarting now.");
   fflush(stdout);
 
   esp_restart();

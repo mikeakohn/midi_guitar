@@ -16,7 +16,7 @@
 #include "FreqCalc.h"
 
 FreqCalc::FreqCalc() :
-  threshold   { 400   },
+  threshold   { 200   },
   sample_rate { 20000 }
 {
 }
@@ -61,9 +61,9 @@ int FreqCalc::get_frequency(
 
   if (start == -1 || last == -1) { return 0; }
 
-//printf("%d %d %d\n", sample_rate, last, start);
-//printf("%d\n", sample_rate / (last - start));
-//printf("%d\n", sample_rate / sample_count);
+//ESP_LOGI("%d %d %d\n", sample_rate, last, start);
+//ESP_LOGI("%d\n", sample_rate / (last - start));
+//ESP_LOGI("%d\n", sample_rate / sample_count);
 
   int frequency = change_count * sample_rate / (last - start);
 

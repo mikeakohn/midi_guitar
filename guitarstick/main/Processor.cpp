@@ -26,6 +26,7 @@
 #include "Processor.h"
 
 Processor::Processor() :
+  TAG          { "Processor" },
   //debug        { 0      },
   is_ready     { false  },
   sample_rate  { 20000  },
@@ -42,7 +43,7 @@ Processor::Processor() :
 
   if (data == NULL)
   {
-    printf("Could not allocate data %s:%d.\n", __FILE__, __LINE__);
+    ESP_LOGI(TAG, "Could not allocate data %s:%d.", __FILE__, __LINE__);
   }
 
   memset(data, 0, length);
@@ -65,6 +66,8 @@ void Processor::init()
   // Interrupt every 20,0000 times a second.
   init_timer(1000000 / sample_rate, timer_callback);
   ESP_ERROR_CHECK(gptimer_start(gptimer));
+
+  ESP_LOGI(TAG, "Processor::init() complete");
 }
 
 void Processor::init_gpio()

@@ -61,6 +61,7 @@ private:
     const gptimer_alarm_event_data_t *edata,
     void *args);
 
+  const char *TAG;
   Audio audio;
   //DCT dct;
   //UART uart;

@@ -49,6 +49,7 @@ void Audio::init()
   // Calibrate reference voltage.
   calibrate(ADC_UNIT_1, ADC_ATTEN_DB_12);
 
+  ESP_LOGI(TAG, "Audio::init() done.");
 }
 
 void Audio::uninit()
